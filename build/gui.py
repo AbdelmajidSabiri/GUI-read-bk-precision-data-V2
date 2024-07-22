@@ -1,5 +1,6 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Button, PhotoImage
+from tkinter.font import Font
 import customtkinter as ctk
 import tkinter as tk
 import matplotlib.pyplot as plt
@@ -8,6 +9,7 @@ import numpy as np
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\dell\GUI-read-Bk-precision-data-V2\build\assets\frame0")
+
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -18,10 +20,10 @@ def update_progress():
         progress += 0.01
         progress_bar.set(progress)
         progress_label.configure(text=f"{int(progress * 100)}%")
-        root.after(100, update_progress)  # Update progress every 100 milliseconds
+        window.after(100, update_progress)  # Update progress every 100 milliseconds
     else:
         progress_label.configure(text="100%")
-        status_label.configure(text="Pass", text_color="green")
+        status_label.configure(text="Saved", text_color="green")
         plot_graph()
 
 def run_test():
@@ -111,29 +113,20 @@ main_frame.pack(side="right", expand=True, fill="both", padx=0, pady=0)
 dashboard_frame = ctk.CTkFrame(master=main_frame, fg_color='#47289b')
 bk_profiles_frame = ctk.CTkFrame(master=main_frame, fg_color='#47289b')
 
+TextFont = ctk.CTkFont(
+    family="Lucida Sans",
+    size=20,
+    weight="normal",
+    slant="roman",
+    underline=0,
+    overstrike=0)
+
 # Initial display
 dashboard_frame.pack(fill="both", expand=True)
 
 # Dashboard content
-serial_label = ctk.CTkLabel(master=dashboard_frame, text="INSERT", font=("Arial", 12), text_color='#FFFFFF')
-serial_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-serial_entry = ctk.CTkEntry(master=dashboard_frame, placeholder_text="Serial Number: 0215841210")
-serial_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
-run_button = ctk.CTkButton(master=dashboard_frame, text="RUN TEST", command=run_test, fg_color='#0C0028', text_color='#FFFFFF')
-run_button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
-
-progress = 0
-progress_bar = ctk.CTkProgressBar(master=dashboard_frame)
-progress_bar.set(progress)
-progress_bar.grid(row=0, column=3, padx=10, pady=10, sticky="w")
-
-progress_label = ctk.CTkLabel(master=dashboard_frame, text="0%", font=("Arial", 12, "bold"), text_color='#FFFFFF')
-progress_label.grid(row=0, column=4, padx=10, pady=10, sticky="w")
-
-status_label = ctk.CTkLabel(master=dashboard_frame, text="Waiting", text_color="orange", font=("Arial", 12, "bold"))
-status_label.grid(row=0, column=5, padx=10, pady=10, sticky="w")
 
 canvas = Canvas(
     dashboard_frame,
@@ -156,11 +149,11 @@ image_1 = canvas.create_image(
 
 canvas.create_text(
     56.0,
-    50.0,
+    53.0,
     anchor="nw",
     text="INSERT",
     fill="#FFFFFF",
-    font=("Poppins SemiBold", 22 * -1)
+    font=("normal",18)
 )
 
 canvas.create_text(
@@ -418,11 +411,7 @@ image_21 = canvas.create_image(
 
 image_image_22 = PhotoImage(
     file=relative_to_assets("image_22.png"))
-image_22 = canvas.create_image(
-    672.0,
-    62.0,
-    image=image_image_22
-)
+
 
 image_image_23 = PhotoImage(
     file=relative_to_assets("image_23.png"))
@@ -431,5 +420,23 @@ image_23 = canvas.create_image(
     789.0,
     image=image_image_23
 )
+
+serial_entry = ctk.CTkEntry(master=dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
+serial_entry.place(x=150, y=40)
+
+run_button = ctk.CTkButton(master=dashboard_frame, text = "RUN TEST" ,image=image_image_22, command=run_test, fg_color='#0C0028', text_color='#FFFFFF', bg_color="#0C0028", font=TextFont)
+run_button.place(x=500, y=25)
+
+progress = 0
+progress_bar = ctk.CTkProgressBar(master=dashboard_frame)
+progress_bar.set(progress)
+progress_bar.place(x=680, y=45)
+
+progress_label = ctk.CTkLabel(master=dashboard_frame, text="0%", font=("Arial", 16, "bold"), text_color='#FFFFFF', bg_color="#0C0028")
+progress_label.place(x=900,y=35)
+
+status_label = ctk.CTkLabel(master=dashboard_frame, text="Waiting", text_color="orange", font=("Arial", 18, "bold"), bg_color="#281854")
+status_label.place(x=450, y=425)
+
 window.resizable(False, False)
 window.mainloop()
