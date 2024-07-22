@@ -149,7 +149,7 @@ canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
-    551.0,
+    351.0,
     66.0,
     image=image_image_1
 )
@@ -164,8 +164,8 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    903.0,
-    45.0,
+    703.0,
+    50.0,
     anchor="nw",
     text="RUN TEST",
     fill="#FFFFFF",
@@ -173,7 +173,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    1040.0,
+    840.0,
     649.0,
     anchor="nw",
     text="TEST CONDITIONS",
@@ -184,7 +184,7 @@ canvas.create_text(
 image_image_4 = PhotoImage(
     file=relative_to_assets("image_4.png"))
 image_4 = canvas.create_image(
-    174.0,
+    0.0,
     72.0,
     image=image_image_4
 )
@@ -192,7 +192,7 @@ image_4 = canvas.create_image(
 image_image_5 = PhotoImage(
     file=relative_to_assets("image_5.png"))
 image_5 = canvas.create_image(
-    1659.0,
+    1459.0,
     62.0,
     image=image_image_5
 )
@@ -200,7 +200,7 @@ image_5 = canvas.create_image(
 image_image_6 = PhotoImage(
     file=relative_to_assets("image_6.png"))
 image_6 = canvas.create_image(
-    1579.0,
+    1379.0,
     62.0,
     image=image_image_6
 )
@@ -208,7 +208,7 @@ image_6 = canvas.create_image(
 image_image_7 = PhotoImage(
     file=relative_to_assets("image_7.png"))
 image_7 = canvas.create_image(
-    345.0,
+    145.0,
     304.0,
     image=image_image_7
 )
@@ -217,7 +217,7 @@ image_7 = canvas.create_image(
 image_image_8 = PhotoImage(
     file=relative_to_assets("image_8.png"))
 image_8 = canvas.create_image(
-    345.0,
+    145.0,
     548.0,
     image=image_image_8
 )
@@ -225,7 +225,7 @@ image_8 = canvas.create_image(
 image_image_9 = PhotoImage(
     file=relative_to_assets("image_9.png"))
 image_9 = canvas.create_image(
-    577.0,
+    377.0,
     304.0,
     image=image_image_9
 )
@@ -233,7 +233,7 @@ image_9 = canvas.create_image(
 image_image_10 = PhotoImage(
     file=relative_to_assets("image_10.png"))
 image_10 = canvas.create_image(
-    577.0,
+    377.0,
     548.0,
     image=image_image_10
 )
@@ -241,7 +241,7 @@ image_10 = canvas.create_image(
 image_image_11 = PhotoImage(
     file=relative_to_assets("image_11.png"))
 image_11 = canvas.create_image(
-    808.0,
+    608.0,
     304.0,
     image=image_image_11
 )
@@ -249,7 +249,7 @@ image_11 = canvas.create_image(
 image_image_12 = PhotoImage(
     file=relative_to_assets("image_12.png"))
 image_12 = canvas.create_image(
-    808.0,
+    608.0,
     548.0,
     image=image_image_12
 )
@@ -257,7 +257,7 @@ image_12 = canvas.create_image(
 image_image_13 = PhotoImage(
     file=relative_to_assets("image_13.png"))
 image_13 = canvas.create_image(
-    1335.0,
+    1135.0,
     793.0,
     image=image_image_13
 )
@@ -265,7 +265,7 @@ image_13 = canvas.create_image(
 image_image_14 = PhotoImage(
     file=relative_to_assets("image_14.png"))
 image_14 = canvas.create_image(
-    345.0,
+    145.0,
     303.0,
     image=image_image_14
 )
@@ -273,7 +273,7 @@ image_14 = canvas.create_image(
 image_image_15 = PhotoImage(
     file=relative_to_assets("image_15.png"))
 image_15 = canvas.create_image(
-    345.0,
+    145.0,
     548.0,
     image=image_image_15
 )
@@ -281,7 +281,7 @@ image_15 = canvas.create_image(
 image_image_16 = PhotoImage(
     file=relative_to_assets("image_16.png"))
 image_16 = canvas.create_image(
-    577.0,
+    377.0,
     303.0,
     image=image_image_16
 )
@@ -289,7 +289,7 @@ image_16 = canvas.create_image(
 image_image_17 = PhotoImage(
     file=relative_to_assets("image_17.png"))
 image_17 = canvas.create_image(
-    577.0,
+    377.0,
     548.0,
     image=image_image_17
 )
@@ -297,7 +297,7 @@ image_17 = canvas.create_image(
 image_image_18 = PhotoImage(
     file=relative_to_assets("image_18.png"))
 image_18 = canvas.create_image(
-    809.0,
+    609.0,
     303.0,
     image=image_image_18
 )
@@ -305,13 +305,13 @@ image_18 = canvas.create_image(
 image_image_19 = PhotoImage(
     file=relative_to_assets("image_19.png"))
 image_19 = canvas.create_image(
-    809.0,
+    609.0,
     548.0,
     image=image_image_19
 )
 
 canvas.create_text(
-    331.0,
+    131.0,
     180.0,
     anchor="nw",
     text="Isc",
@@ -320,7 +320,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    554.0,
+    354.0,
     180.0,
     anchor="nw",
     text="Voc",
@@ -329,7 +329,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    789.0,
+    589.0,
     178.0,
     anchor="nw",
     text="Imp",
@@ -338,7 +338,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    779.0,
+    579.0,
     426.0,
     anchor="nw",
     text="Status",
@@ -347,7 +347,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    547.0,
+    347.0,
     422.0,
     anchor="nw",
     text="Pmpp",
@@ -356,7 +356,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    325.0,
+    125.0,
     422.0,
     anchor="nw",
     text="Vmp",
@@ -365,7 +365,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    1044.0,
+    844.0,
     726.0,
     anchor="nw",
     text="Lamps",
@@ -374,7 +374,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    1368.0,
+    1168.0,
     726.0,
     anchor="nw",
     text="Time",
@@ -383,7 +383,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    1368.0,
+    1168.0,
     815.0,
     anchor="nw",
     text="Date",
@@ -392,7 +392,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    1044.0,
+    844.0,
     815.0,
     anchor="nw",
     text="Temperature",
@@ -403,7 +403,7 @@ canvas.create_text(
 image_image_20 = PhotoImage(
     file=relative_to_assets("image_20.png"))
 image_20 = canvas.create_image(
-    967.0,
+    767.0,
     126.9999999999996,
     image=image_image_20
 )
@@ -411,7 +411,7 @@ image_20 = canvas.create_image(
 image_image_21 = PhotoImage(
     file=relative_to_assets("image_21.png"))
 image_21 = canvas.create_image(
-    176.0,
+    0.0,
     469.0,
     image=image_image_21
 )
@@ -419,7 +419,7 @@ image_21 = canvas.create_image(
 image_image_22 = PhotoImage(
     file=relative_to_assets("image_22.png"))
 image_22 = canvas.create_image(
-    872.0,
+    672.0,
     62.0,
     image=image_image_22
 )
@@ -427,7 +427,7 @@ image_22 = canvas.create_image(
 image_image_23 = PhotoImage(
     file=relative_to_assets("image_23.png"))
 image_23 = canvas.create_image(
-    1342.0,
+    1142.0,
     789.0,
     image=image_image_23
 )
