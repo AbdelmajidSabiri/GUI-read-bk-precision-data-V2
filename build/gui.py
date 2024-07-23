@@ -7,6 +7,8 @@ import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 import sys,time
+import math
+import random
 sys.path.append('C:\\Users\\dell\\GUI-read-Bk-precision-data')
 from readData import Add_current, Bkp8600, Add_voltage, Add_serialNum, CollectData
 from PIL import Image, ImageTk
@@ -48,10 +50,10 @@ class GUI:
         self.image_bk_profiles = PhotoImage(file=self.relative_to_assets("image_3.png"))
 
         # Create buttons with images
-        self.dashboard_button = ctk.CTkButton(master=self.left_frame, image=self.image_dashboard, text="DASHBOARD", compound="top", command=self.show_dashboard, fg_color='#0C0028', text_color='#FFFFFF')
+        self.dashboard_button = ctk.CTkButton(master=self.left_frame, image=self.image_dashboard, text="DASHBOARD", compound="top", command=self.show_dashboard, fg_color='#0C0028', text_color='#FFFFFF', font=("Arial Rounded MT Bold",14))
         self.dashboard_button.pack(pady=10, padx=10, anchor='w')
 
-        self.bk_profiles_button = ctk.CTkButton(master=self.left_frame, image=self.image_bk_profiles, text="BK PROFILES", compound="top", command=self.show_bk_profiles, fg_color='#0C0028', text_color='#FFFFFF')
+        self.bk_profiles_button = ctk.CTkButton(master=self.left_frame, image=self.image_bk_profiles, text="BK PROFILES", compound="top", command=self.show_bk_profiles, fg_color='#0C0028', text_color='#473F70', font=("Arial Rounded MT Bold",14))
         self.bk_profiles_button.pack(pady=10, padx=10, anchor='w')
 
         # Create a frame for the main content
@@ -162,18 +164,46 @@ class GUI:
 
     # Animation function for updating Combined (current & voltage) plot
     def animate_combined(self, i, ax):
-        current, voltage = self.get_data()
+        # Simulated data
+        current = 10 * math.sin(i * 0.1) + random.uniform(-1, 1)
+        voltage = 20 * math.cos(i * 0.1) + random.uniform(-1, 1)
+
         self.data_list_current.append(current)
         self.data_list_voltage.append(voltage)
         self.data_list_current = self.data_list_current[-50:]  # Limit to the last 50 data points
         self.data_list_voltage = self.data_list_voltage[-50:]  # Limit to the last 50 data points
+        
         ax.clear()
-        ax.plot(self.data_list_current, label='Current')
-        ax.plot(self.data_list_voltage, label='Voltage')
-        ax.legend()
+
+        ax.set_facecolor('#0C0028')  # Background color for the axes
+        
+
+        # Plot the current data
+        ax.plot(self.data_list_current,color='#C48BFF', linewidth=2.5)
+        ax.fill_between(range(len(self.data_list_current)), self.data_list_current, color='#A260E8', alpha=0.5, edgecolor='none')
+
+        # Plot the voltage data
+        ax.plot(self.data_list_voltage, color='#FEB9FF', linewidth=2.5)
+        ax.fill_between(range(len(self.data_list_voltage)), self.data_list_voltage, color='#4B237B', alpha=0.5, edgecolor='none')
+
         ax.set_ylim([0, 20]) 
 
+        ax.set_xlabel("Current", color='#AD94FF')
+        ax.set_ylabel("Voltage", color='#AD94FF')
+        ax.set_title("Simulated Current and Voltage", color='#AD94FF', fontsize=16)
 
+        ax.spines['left'].set_color('#FFFFFF')
+        ax.spines['bottom'].set_color('#FFFFFF')
+        ax.spines['top'].set_color('#47289b')
+        ax.spines['right'].set_color('#47289b')
+
+        ax.tick_params(axis='x', colors='#FFFFFF')
+        ax.tick_params(axis='y', colors='#FFFFFF')
+
+        ax.grid(True, color='#3A3A3A')
+        ax.xaxis.label.set_color('#AD94FF')
+        ax.yaxis.label.set_color('#AD94FF')
+        
     # Method to get Serial Number
     def get_serialNum(self):
         serial_number = self.entry_serialNum.get()
@@ -297,16 +327,7 @@ class GUI:
             anchor="nw",
             text="INSERT",
             fill="#FFFFFF",
-            font=("normal",18)
-        )
-
-        canvas.create_text(
-            703.0,
-            50.0,
-            anchor="nw",
-            text="RUN TEST",
-            fill="#FFFFFF",
-            font=("Poppins SemiBold", 22 * -1)
+            font=("Arial Rounded MT Bold",18)
         )
 
         canvas.create_text(
@@ -315,7 +336,7 @@ class GUI:
             anchor="nw",
             text="TEST CONDITIONS",
             fill="#FFFFFF",
-            font=("Poppins Bold", 24 * -1)
+            font=("Arial Rounded MT Bold", 20)
         )
 
         self.image_image_4 = PhotoImage(
@@ -453,7 +474,7 @@ class GUI:
             anchor="nw",
             text="Isc",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -462,7 +483,7 @@ class GUI:
             anchor="nw",
             text="Voc",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -471,7 +492,7 @@ class GUI:
             anchor="nw",
             text="Imp",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -480,7 +501,7 @@ class GUI:
             anchor="nw",
             text="Status",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -489,7 +510,7 @@ class GUI:
             anchor="nw",
             text="Pmpp",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium",16)
         )
 
         canvas.create_text(
@@ -498,7 +519,7 @@ class GUI:
             anchor="nw",
             text="Vmp",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -507,7 +528,7 @@ class GUI:
             anchor="nw",
             text="Lamps",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -516,7 +537,7 @@ class GUI:
             anchor="nw",
             text="Time",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -525,7 +546,7 @@ class GUI:
             anchor="nw",
             text="Date",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("Poppins Medium", 16)
         )
 
         canvas.create_text(
@@ -534,7 +555,23 @@ class GUI:
             anchor="nw",
             text="Temperature",
             fill="#FFFFFF",
-            font=("Poppins Medium", 20 * -1)
+            font=("David", 16)
+        )
+        canvas.create_text(
+            900.0,
+            575.0,
+            anchor="nw",
+            text="Current",
+            fill="#FFFFFF",
+            font=("David", 16)
+        )
+        canvas.create_text(
+            1130.0,
+            575.0,
+            anchor="nw",
+            text="Voltage",
+            fill="#FFFFFF",
+            font=("David", 16)
         )
 
         self.image_image_20 = PhotoImage(
@@ -565,10 +602,34 @@ class GUI:
             image=self.image_image_23
         )
 
-        fig_combined, ax_combined = plt.subplots(figsize=(5, 3))
+        self.legendVol = PhotoImage(
+            file=self.relative_to_assets("legendVol.png"))
+        image_23 = canvas.create_image(
+            1080.0,
+            590.0,
+            image=self.legendVol
+        )
+
+        self.legendCur = PhotoImage(
+            file=self.relative_to_assets("legendCur.png"))
+        image_23 = canvas.create_image(
+            850.0,
+            590.0,
+            image=self.legendCur
+        )
+
+
+        fig_combined, ax_combined = plt.subplots(figsize=(6.5, 4))
+
+        fig_combined.patch.set_facecolor("#0C0028")  # Background color for the figure
+
+        # Set figure border color and width
+        fig_combined.patch.set_edgecolor('#4522A1')  # Set border color
+        fig_combined.patch.set_linewidth(2)  # Set border width
+
         canvas_combined = FigureCanvasTkAgg(fig_combined, master=self.dashboard_frame)
         canvas_combined.draw()
-        canvas_combined.get_tk_widget().place(x=900, y=180)
+        canvas_combined.get_tk_widget().place(x=800, y=160)
         self.ani_combined = animation.FuncAnimation(
             fig_combined,
             self.animate_combined,
@@ -581,7 +642,7 @@ class GUI:
                 textvariable=self.max_power_var,
                 bg = "#281854",
                 fg="green",
-                font=("Inter Medium", 15)
+                font=("Arial Rounded MT Bold", 15)
             )
         self.label_max_power_value.place(x=305, y=528)
 
@@ -590,7 +651,7 @@ class GUI:
                 textvariable=self.Vmpp_var,
                 bg="#281854",
                 fg="green",
-                font=("Inter Medium", 16)
+                font=("Arial Rounded MT Bold", 16)
             )
         self.label_Vmpp_value.place(x=80, y=528)
 
@@ -599,7 +660,7 @@ class GUI:
                 textvariable=self.Impp_var,
                 bg="#281854",
                 fg="green",
-                font=("Inter Medium", 16)
+                font=("Arial Rounded MT Bold", 16)
             )
         self.label_Impp_value.place(x=530, y=285)
         
@@ -608,7 +669,7 @@ class GUI:
                 textvariable=self.Isc_var,
                 bg="#281854",
                 fg="green",
-                font=("Inter Medium", 16)
+                font=("Arial Rounded MT Bold", 16)
             )
         self.label_Isc_value.place(x=80, y=285)
 
@@ -617,7 +678,7 @@ class GUI:
                 textvariable=self.Voc_var,
                 bg="#281854",
                 fg="green",
-                font=("Inter Medium", 16)
+                font=("Arial Rounded MT Bold", 16)
             )
         self.label_Voc_value.place(x=305, y=285)
 
@@ -625,7 +686,7 @@ class GUI:
         self.serial_entry = ctk.CTkEntry(master=self.dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
         self.serial_entry.place(x=150, y=40)
 
-        self.run_button = ctk.CTkButton(master=self.dashboard_frame, text = "RUN TEST" ,image=self.image_image_22, command=self.run_test, fg_color='#0C0028', text_color='#FFFFFF', bg_color="#0C0028", font=self.TextFont)
+        self.run_button = ctk.CTkButton(master=self.dashboard_frame, text = "RUN TEST" ,image=self.image_image_22, command=self.run_test, fg_color='#0C0028', text_color='#FFFFFF', bg_color="#0C0028", font=("Arial Rounded MT Bold",18))
         self.run_button.place(x=500, y=25)
 
 
