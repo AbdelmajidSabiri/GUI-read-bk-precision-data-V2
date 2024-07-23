@@ -135,7 +135,7 @@ class GUI:
                 Isc_found = True
                 break
         if not Isc_found :
-            self.Isc_var.set("0.00 A")    
+            self.Isc_var.set("0.00000000 A")    
 
         # Get Value of Voc if it found if not make it 0
         Voc_found = False
@@ -148,8 +148,54 @@ class GUI:
                 break
 
         if not Voc_found :
-            self.Voc_var.set("0.00 V")    
+            self.Voc_var.set("0.00000000 V")    
     
+    def get_data(self):
+        try:
+            measured_current = self.bk_device.get_current()
+            voltage = self.bk_device.get_voltage()
+            return measured_current, voltage
+        except Exception as e:
+            print(f"Error retrieving data: {e}")
+            return 0.0, 0.0
+
+
+    # Animation function for updating Combined (current & voltage) plot
+    def animate_combined(self, i, ax):
+        current, voltage = self.get_data()
+        self.data_list_current.append(current)
+        self.data_list_voltage.append(voltage)
+        self.data_list_current = self.data_list_current[-50:]  # Limit to the last 50 data points
+        self.data_list_voltage = self.data_list_voltage[-50:]  # Limit to the last 50 data points
+        ax.clear()
+        ax.plot(self.data_list_current, label='Current')
+        ax.plot(self.data_list_voltage, label='Voltage')
+        ax.legend()
+        ax.set_ylim([0, 20]) 
+
+
+    # Method to get Serial Number
+    def get_serialNum(self):
+        serial_number = self.entry_serialNum.get()
+        return serial_number
+
+    def test(self) :
+
+        current_date = datetime.now()
+        formatted_date = current_date.strftime("%m/%d/%Y")
+        formatted_time = current_date.strftime("%H:%M:%S")
+
+        serial_number = self.get_serialNum()
+        Voc = round(float(self.Voc_var.get().split()[0]),4)
+        Isc = round(float(self.Isc_var.get().split()[0]),4)
+        max_power = self.max_power
+        Impp = round(float(self.Impp_var.get().split()[0]),4)
+        Vmpp = round(float(self.Vmpp_var.get().split()[0]),4)
+
+        
+        CollectData(formatted_date,formatted_time,serial_number,max_power,Vmpp,Impp,Voc,Isc)
+        
+
     def update_progress(self):
         if self.progress < 1:
             self.progress += 0.01
@@ -166,6 +212,7 @@ class GUI:
         self.progress_bar.set(self.progress)
         self.status_label.configure(text="Running...", text_color="orange")
         self.update_progress()
+        
 
     def plot_graph(self):
         current = np.linspace(0, 9.2, 100)
@@ -221,91 +268,7 @@ class GUI:
         self.bk_profiles_frame.pack(fill="both", expand=True)
         self.dashboard_frame.pack_forget()
 
-    def get_data(self):
-        try:
-            measured_current = self.bk_device.get_current()
-            voltage = self.bk_device.get_voltage()
-            return measured_current, voltage
-        except Exception as e:
-            print(f"Error retrieving data: {e}")
-            return 0.0, 0.0
 
-    # Animation function for updating current plot
-    def animate_current(self, i, ax):
-        current, _ = self.get_data()
-        self.data_list_current.append(current)
-        self.data_list_current = self.data_list_current[-50:]  # Limit to the last 50 data points
-        ax.clear()
-        ax.plot(self.data_list_current)
-        ax.set_ylim([0.0001, 0.003])
-
-
-    # Animation function for updating Voltage plot
-    def animate_voltage(self, i, ax):
-        _, voltage = self.get_data()
-        self.data_list_voltage.append(voltage)
-        self.data_list_voltage = self.data_list_voltage[-50:]  # Limit to the last 50 data points
-        ax.clear()
-        ax.plot(self.data_list_voltage)
-        ax.set_ylim([0, 20])
-
-
-    # Animation function for updating Power plot
-    def animate_power(self,i,ax) :
-        current, voltage = self.get_data()
-        power = current * voltage
-        self.data_list_power.append(power)
-        self.data_list_power = self.data_list_power[-50:]  # Limit to the last 50 data points
-        ax.clear()
-        ax.plot(self.data_list_power)
-        ax.set_ylim([0, 0.000005])
-
-
-    # Animation function for updating Combined (current & voltage) plot
-    def animate_combined(self, i, ax):
-        current, voltage = self.get_data()
-        self.data_list_current.append(current)
-        self.data_list_voltage.append(voltage)
-        self.data_list_current = self.data_list_current[-50:]  # Limit to the last 50 data points
-        self.data_list_voltage = self.data_list_voltage[-50:]  # Limit to the last 50 data points
-        ax.clear()
-        ax.plot(self.data_list_current, label='Current')
-        ax.plot(self.data_list_voltage, label='Voltage')
-        ax.legend()
-        ax.set_ylim([0, 20]) 
-
-
-    # Method change CC
-    def add_current(self):
-        current_value = float(self.entry_current.get())
-        self.bk_device.set_current(current_value)
-
-    # Method change CV
-    def add_voltage(self):
-        voltage_value = float(self.entry_voltage.get())
-        self.bk_device.set_voltage(voltage_value)
-
-    # Method to get Serial Number
-    def get_serialNum(self):
-        serial_number = self.entry_serialNum.get()
-        return serial_number
-
-    def test(self) :
-
-        current_date = datetime.now()
-        formatted_date = current_date.strftime("%m/%d/%Y")
-        formatted_time = current_date.strftime("%H:%M:%S")
-
-        serial_number = self.get_serialNum()
-        Voc = round(float(self.Voc_var.get().split()[0]),4)
-        Isc = round(float(self.Isc_var.get().split()[0]),4)
-        max_power = self.max_power
-        Impp = round(float(self.Impp_var.get().split()[0]),4)
-        Vmpp = round(float(self.Vmpp_var.get().split()[0]),4)
-
-        
-        CollectData(formatted_date,formatted_time,serial_number,max_power,Vmpp,Impp,Voc,Isc)
-        
 
     def setup_dashboard_content(self):
         # Dashboard content
@@ -601,6 +564,62 @@ class GUI:
             789.0,
             image=self.image_image_23
         )
+
+        fig_combined, ax_combined = plt.subplots(figsize=(5, 3))
+        canvas_combined = FigureCanvasTkAgg(fig_combined, master=self.dashboard_frame)
+        canvas_combined.draw()
+        canvas_combined.get_tk_widget().place(x=900, y=180)
+        self.ani_combined = animation.FuncAnimation(
+            fig_combined,
+            self.animate_combined,
+            fargs=(ax_combined,),
+            interval=100
+        )
+
+        self.label_max_power_value = Label(
+                self.dashboard_frame,
+                textvariable=self.max_power_var,
+                bg = "#281854",
+                fg="green",
+                font=("Inter Medium", 15)
+            )
+        self.label_max_power_value.place(x=305, y=528)
+
+        self.label_Vmpp_value = Label(
+                self.dashboard_frame,
+                textvariable=self.Vmpp_var,
+                bg="#281854",
+                fg="green",
+                font=("Inter Medium", 16)
+            )
+        self.label_Vmpp_value.place(x=80, y=528)
+
+        self.label_Impp_value = Label(
+                self.dashboard_frame,
+                textvariable=self.Impp_var,
+                bg="#281854",
+                fg="green",
+                font=("Inter Medium", 16)
+            )
+        self.label_Impp_value.place(x=530, y=285)
+        
+        self.label_Isc_value = Label(
+                self.dashboard_frame,
+                textvariable=self.Isc_var,
+                bg="#281854",
+                fg="green",
+                font=("Inter Medium", 16)
+            )
+        self.label_Isc_value.place(x=80, y=285)
+
+        self.label_Voc_value = Label(
+                self.dashboard_frame,
+                textvariable=self.Voc_var,
+                bg="#281854",
+                fg="green",
+                font=("Inter Medium", 16)
+            )
+        self.label_Voc_value.place(x=305, y=285)
 
 
         self.serial_entry = ctk.CTkEntry(master=self.dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
