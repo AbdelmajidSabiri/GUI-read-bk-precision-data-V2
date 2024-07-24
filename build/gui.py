@@ -41,6 +41,8 @@ class GUI:
         self.Impp_var = StringVar()
         self.Isc_var = StringVar()
         self.Voc_var = StringVar()
+        self.temp_var = StringVar(value="25")
+
 
         self.left_frame = ctk.CTkFrame(master=self.window, width=200, corner_radius=0, fg_color='#0C0028')
         self.left_frame.pack(side="left", fill="y")
@@ -102,7 +104,7 @@ class GUI:
 
     # Function to update Max Power
     def update_max_power(self):
-        # Update displayed maximum power and MPP values periodically
+        # Get max power, Vmpp and Impp
         max_power, MPP = self.GetMaxPower()
 
         #Format Values
@@ -178,9 +180,8 @@ class GUI:
         
         ax.clear()
 
-        ax.set_facecolor('#0C0028')  # Background color for the axes
+        ax.set_facecolor('#0C0028')
         
-
         # Plot the current data
         ax.plot(self.data_list_current,color='#C48BFF', linewidth=2.5)
         ax.fill_between(range(len(self.data_list_current)), self.data_list_current, color='#A260E8', alpha=0.5, edgecolor='none')
@@ -237,16 +238,30 @@ class GUI:
             self.window.after(100, self.update_progress)  # Update self.progress every 100 milliseconds
         else:
             self.progress_label.configure(text="100%")
-            self.status_label.configure(text="Saved", text_color="green")
+            self.status_label.configure(text="Saved", text_color="#06F30B")
             self.SaveData()
+            self.run_button.configure(state = 'normal')
+            self.run_button.configure(image = self.image_image_22)
+
 
     # Function To Start Test if RUN TEST button is pressed
     def run_test(self):
         self.progress = 0
         self.progress_bar.set(self.progress)
         self.status_label.configure(text="Running...", text_color="orange")
+        self.run_button.configure(state = 'disabled')
+        self.run_button.configure(image = self.pause)
         self.update_progress()
-        
+    
+    def ON_Lamps(self):
+        self.ON_button.configure(text_color = "#06F30B")
+        self.OFF_button.configure(text_color = "grey")
+
+    def OFF_Lamps(self):
+        self.OFF_button.configure(text_color = "red")
+        self.ON_button.configure(text_color = "grey")
+
+    
     # Function to show content of dashboard frame if DASHBOARD button is pressed
     def show_dashboard(self):
         self.dashboard_frame.pack(fill="both", expand=True)
@@ -579,6 +594,11 @@ class GUI:
             image=self.legendCur
         )
 
+        self.pause = PhotoImage(
+            file = self.relative_to_assets("Pause.png")
+        )
+        
+
 
         # Draw chart + animation
         fig_combined, ax_combined = plt.subplots(figsize=(6.5, 4))
@@ -600,7 +620,7 @@ class GUI:
                 self.dashboard_frame,
                 textvariable=self.max_power_var,
                 bg = "#281854",
-                fg="green",
+                fg="#06F30B",
                 font=("Arial Rounded MT Bold", 15)
             )
         self.label_max_power_value.place(x=305, y=528)
@@ -609,7 +629,7 @@ class GUI:
                 self.dashboard_frame,
                 textvariable=self.Vmpp_var,
                 bg="#281854",
-                fg="green",
+                fg="#06F30B",
                 font=("Arial Rounded MT Bold", 16)
             )
         self.label_Vmpp_value.place(x=80, y=528)
@@ -618,7 +638,7 @@ class GUI:
                 self.dashboard_frame,
                 textvariable=self.Impp_var,
                 bg="#281854",
-                fg="green",
+                fg="#06F30B",
                 font=("Arial Rounded MT Bold", 16)
             )
         self.label_Impp_value.place(x=530, y=285)
@@ -627,7 +647,7 @@ class GUI:
                 self.dashboard_frame,
                 textvariable=self.Isc_var,
                 bg="#281854",
-                fg="green",
+                fg="#06F30B",
                 font=("Arial Rounded MT Bold", 16)
             )
         self.label_Isc_value.place(x=80, y=285)
@@ -636,17 +656,18 @@ class GUI:
                 self.dashboard_frame,
                 textvariable=self.Voc_var,
                 bg="#281854",
-                fg="green",
+                fg="#06F30B",
                 font=("Arial Rounded MT Bold", 16)
             )
         self.label_Voc_value.place(x=305, y=285)
+
 
         # Entry Text for serial number of solar module
         self.entry_serialNum = ctk.CTkEntry(master=self.dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
         self.entry_serialNum.place(x=150, y=40)
 
         # RUN TEST button to start test
-        self.run_button = ctk.CTkButton(master=self.dashboard_frame, text = "RUN TEST" ,image=self.image_image_22, command=self.run_test, fg_color='#0C0028', text_color='#FFFFFF', bg_color="#0C0028", font=("Arial Rounded MT Bold",18))
+        self.run_button = ctk.CTkButton(master=self.dashboard_frame, text = "RUN TEST" ,image=self.image_image_22, command=self.run_test, fg_color='#0C0028', text_color='#FFFFFF', font=("Arial Rounded MT Bold",18))
         self.run_button.place(x=500, y=25)
 
         # Progress bar to show the progress of the test
@@ -667,6 +688,20 @@ class GUI:
         self.time_label.place(x=1010, y= 577)
         self.date_label = ctk.CTkLabel(master = self.dashboard_frame, text = "", text_color="White", font=("David", 18))
         self.date_label.place(x=1010, y=649)
+
+        # Temperature Label
+        self.temp_label = ctk.CTkLabel(master = self.dashboard_frame, textvariable = self.temp_var, text_color="#06F30B", font=("Arial Rounded MT Bold", 18))
+        self.degree_label = ctk.CTkLabel(master = self.dashboard_frame, text = "°C", text_color="white", font=("Arial Rounded MT Bold", 18))
+        self.temp_label.place(x=810, y=649)
+        self.degree_label.place(x=840,y=649)
+
+        # Lamps Button
+        self.ON_button = ctk.CTkButton(master = self.dashboard_frame, text="ON", text_color="#06F30B", fg_color='#0C0028', command= self.ON_Lamps, width=20, font=("Arial Rounded MT Bold",18), hover_color='#0C0028')
+        self.ON_button.place(x=770,y=579)
+        self.OFF_button = ctk.CTkButton(master = self.dashboard_frame, text="OFF", text_color="grey", fg_color='#0C0028', command= self.OFF_Lamps, width=20, font=("Arial Rounded MT Bold",18), hover_color='#0C0028')
+        self.OFF_button.place(x=820,y=579)
+
+        
 
     # Funtion to close the application correctly
     def on_closing(self):
