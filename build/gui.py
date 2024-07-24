@@ -235,7 +235,7 @@ class GUI:
         else:
             self.progress_label.configure(text="100%")
             self.status_label.configure(text="Saved", text_color="green")
-            self.plot_graph()
+            self.test()
 
     def run_test(self):
         self.progress = 0
@@ -683,8 +683,8 @@ class GUI:
         self.label_Voc_value.place(x=305, y=285)
 
 
-        self.serial_entry = ctk.CTkEntry(master=self.dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
-        self.serial_entry.place(x=150, y=40)
+        self.entry_serialNum = ctk.CTkEntry(master=self.dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
+        self.entry_serialNum.place(x=150, y=40)
 
         self.run_button = ctk.CTkButton(master=self.dashboard_frame, text = "RUN TEST" ,image=self.image_image_22, command=self.run_test, fg_color='#0C0028', text_color='#FFFFFF', bg_color="#0C0028", font=("Arial Rounded MT Bold",18))
         self.run_button.place(x=500, y=25)
