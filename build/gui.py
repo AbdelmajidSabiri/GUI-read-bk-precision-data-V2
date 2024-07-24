@@ -66,6 +66,7 @@ class GUI:
         # Initial display
         self.dashboard_frame.pack(fill="both", expand=True)
 
+        # Setup content of dashboard
         self.setup_dashboard_content()
 
         # Start update loop for maximum power and time
@@ -79,7 +80,7 @@ class GUI:
     def relative_to_assets(path: str) -> Path:
         return GUI.ASSETS_PATH / Path(path)
 
-
+    # Funtion to Get Max power
     def GetMaxPower(self) :
 
         # Get current and voltage
@@ -99,7 +100,7 @@ class GUI:
             self.MPP["Impp"] = current
         return self.max_power,self.MPP
 
-    # Keep updatign Max Power
+    # Function to update Max Power
     def update_max_power(self):
         # Update displayed maximum power and MPP values periodically
         max_power, MPP = self.GetMaxPower()
@@ -120,6 +121,7 @@ class GUI:
         # Update every sec
         self.window.after(1000, self.update_max_power)
 
+    # Calculate Isc and Voc
     def calculate_isc_voc(self):
 
         # Get Value of Isc if it found if not make it 0
@@ -145,6 +147,7 @@ class GUI:
         if not Voc_found :
             self.Voc_var.set("0.00000000 V")  
 
+    # Funtion to update Time
     def update_time(self):
         current_time = datetime.now().strftime('%H:%M:%S')   
         current_date = datetime.now().strftime('%d/%m/%Y')        
@@ -152,7 +155,7 @@ class GUI:
         self.date_label.configure(text = current_date)                        
         self.dashboard_frame.after(1000, self.update_time)    
 
-    
+    # Funtion to Get data from Bk-precision
     def get_data(self):
         try:
             measured_current = self.bk_device.get_current()
@@ -161,7 +164,6 @@ class GUI:
         except Exception as e:
             print(f"Error retrieving data: {e}")
             return 0.0, 0.0
-
 
     # Animation function for updating Combined (current & voltage) plot
     def animate_combined(self, i, ax):
@@ -210,6 +212,7 @@ class GUI:
         serial_number = self.entry_serialNum.get()
         return serial_number
 
+    # Function to Get Data and send it to CollectData function That Add it to excel file
     def SaveData(self) :
 
         current_date = datetime.now()
@@ -225,7 +228,7 @@ class GUI:
         
         CollectData(formatted_date,formatted_time,serial_number,max_power,Vmpp,Impp,Voc,Isc)
         
-
+    # Keep Updating progress bar, and if it arrives 100%, it Will save data
     def update_progress(self):
         if self.progress < 1:
             self.progress += 0.01
@@ -237,25 +240,28 @@ class GUI:
             self.status_label.configure(text="Saved", text_color="green")
             self.SaveData()
 
+    # Function To Start Test if RUN TEST button is pressed
     def run_test(self):
         self.progress = 0
         self.progress_bar.set(self.progress)
         self.status_label.configure(text="Running...", text_color="orange")
         self.update_progress()
         
-
+    # Function to show content of dashboard frame if DASHBOARD button is pressed
     def show_dashboard(self):
         self.dashboard_frame.pack(fill="both", expand=True)
         self.bk_profiles_frame.pack_forget()
 
+    # Function to show content of Bk Profiles frame if BK PROFILES button is pressed
     def show_bk_profiles(self):
         self.bk_profiles_frame.pack(fill="both", expand=True)
         self.dashboard_frame.pack_forget()
 
 
-
+    # Funtion to Setup content of Dashboard Frame
     def setup_dashboard_content(self):
-        # Dashboard content
+
+        # initialis dashborad canvas
         canvas = Canvas(
             self.dashboard_frame,
             bg = "#0C0028",
@@ -266,6 +272,7 @@ class GUI:
             relief = "ridge"
         )
 
+        # Add images and Text
         canvas.place(x = 0, y = 0)
         self.image_image_1 = PhotoImage(
             file=self.relative_to_assets("image_1.png"))
@@ -573,14 +580,11 @@ class GUI:
         )
 
 
+        # Draw chart + animation
         fig_combined, ax_combined = plt.subplots(figsize=(6.5, 4))
-
-        fig_combined.patch.set_facecolor("#0C0028")  # Background color for the figure
-
-        # Set figure border color and width
-        fig_combined.patch.set_edgecolor('#4522A1')  # Set border color
-        fig_combined.patch.set_linewidth(2)  # Set border width
-
+        fig_combined.patch.set_facecolor("#0C0028")
+        fig_combined.patch.set_edgecolor('#4522A1')
+        fig_combined.patch.set_linewidth(2)
         canvas_combined = FigureCanvasTkAgg(fig_combined, master=self.dashboard_frame)
         canvas_combined.draw()
         canvas_combined.get_tk_widget().place(x=800, y=160)
@@ -591,6 +595,7 @@ class GUI:
             interval=100
         )
 
+        # Add labels to Display Data
         self.label_max_power_value = Label(
                 self.dashboard_frame,
                 textvariable=self.max_power_var,
@@ -636,29 +641,34 @@ class GUI:
             )
         self.label_Voc_value.place(x=305, y=285)
 
-
+        # Entry Text for serial number of solar module
         self.entry_serialNum = ctk.CTkEntry(master=self.dashboard_frame, placeholder_text="Serial Number: 0215841210",border_width = 0, fg_color = "white", bg_color="white", width=200)
         self.entry_serialNum.place(x=150, y=40)
 
+        # RUN TEST button to start test
         self.run_button = ctk.CTkButton(master=self.dashboard_frame, text = "RUN TEST" ,image=self.image_image_22, command=self.run_test, fg_color='#0C0028', text_color='#FFFFFF', bg_color="#0C0028", font=("Arial Rounded MT Bold",18))
         self.run_button.place(x=500, y=25)
 
-
+        # Progress bar to show the progress of the test
         self.progress_bar = ctk.CTkProgressBar(master=self.dashboard_frame)
         self.progress_bar.set(self.progress)
         self.progress_bar.place(x=680, y=45)
 
+        # Progress label to display the percentage
         self.progress_label = ctk.CTkLabel(master=self.dashboard_frame, text="0%", font=("Arial", 16, "bold"), text_color='#FFFFFF', bg_color="#0C0028")
         self.progress_label.place(x=900,y=35)
 
+        # Status Label to display the state of the test
         self.status_label = ctk.CTkLabel(master=self.dashboard_frame, text="Waiting", text_color="orange", font=("Arial", 18, "bold"), bg_color="#281854")
         self.status_label.place(x=450, y=425)
 
+        # Time and Date Labels
         self.time_label = ctk.CTkLabel(master=self.dashboard_frame, text="", text_color="white", font=("David", 18))
         self.time_label.place(x=1010, y= 577)
         self.date_label = ctk.CTkLabel(master = self.dashboard_frame, text = "", text_color="White", font=("David", 18))
         self.date_label.place(x=1010, y=649)
 
+    # Funtion to close the application correctly
     def on_closing(self):
         self.bk_device.reset_to_manual()
         self.window.destroy()
