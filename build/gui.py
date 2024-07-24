@@ -33,7 +33,7 @@ class GUI:
         self.window = ctk.CTk()
         self.window.geometry("1377x743")
         self.window.title("Agamine Solar LAMINATE TESTING V 1.0")
-        self.window.configure(bg = "#0C0028")
+        self.window.configure(fg_color = "#0C0028")
 
         # Create variables for displaying max power and other parameters
         self.max_power_var = DoubleVar()
@@ -57,27 +57,20 @@ class GUI:
         self.bk_profiles_button.pack(pady=10, padx=10, anchor='w')
 
         # Create a frame for the main content
-        self.main_frame = ctk.CTkFrame(master=self.window, fg_color='#47289b')
+        self.main_frame = ctk.CTkFrame(master=self.window, fg_color='#0C0028')
         self.main_frame.pack(side="right", expand=True, fill="both", padx=0, pady=0)
 
-        self.dashboard_frame = ctk.CTkFrame(master=self.main_frame, fg_color='#47289b')
+        self.dashboard_frame = ctk.CTkFrame(master=self.main_frame, fg_color='#0C0028')
         self.bk_profiles_frame = ctk.CTkFrame(master=self.main_frame, fg_color='#47289b')
-
-        self.TextFont = ctk.CTkFont(
-            family="Lucida Sans",
-            size=20,
-            weight="normal",
-            slant="roman",
-            underline=0,
-            overstrike=0)
 
         # Initial display
         self.dashboard_frame.pack(fill="both", expand=True)
 
         self.setup_dashboard_content()
 
-        # Start update loop for maximum power
+        # Start update loop for maximum power and time
         self.update_max_power()
+        self.update_time()
 
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)  # Handle window closing event
         self.window.mainloop()
@@ -150,7 +143,15 @@ class GUI:
                 break
 
         if not Voc_found :
-            self.Voc_var.set("0.00000000 V")    
+            self.Voc_var.set("0.00000000 V")  
+
+    def update_time(self):
+        current_time = datetime.now().strftime('%H:%M:%S')   
+        current_date = datetime.now().strftime('%d/%m/%Y')        
+        self.time_label.configure(text=current_time)  
+        self.date_label.configure(text = current_date)                        
+        self.dashboard_frame.after(1000, self.update_time)    
+
     
     def get_data(self):
         try:
@@ -209,7 +210,7 @@ class GUI:
         serial_number = self.entry_serialNum.get()
         return serial_number
 
-    def test(self) :
+    def SaveData(self) :
 
         current_date = datetime.now()
         formatted_date = current_date.strftime("%m/%d/%Y")
@@ -221,7 +222,6 @@ class GUI:
         max_power = self.max_power
         Impp = round(float(self.Impp_var.get().split()[0]),4)
         Vmpp = round(float(self.Vmpp_var.get().split()[0]),4)
-
         
         CollectData(formatted_date,formatted_time,serial_number,max_power,Vmpp,Impp,Voc,Isc)
         
@@ -235,7 +235,7 @@ class GUI:
         else:
             self.progress_label.configure(text="100%")
             self.status_label.configure(text="Saved", text_color="green")
-            self.test()
+            self.SaveData()
 
     def run_test(self):
         self.progress = 0
@@ -243,52 +243,6 @@ class GUI:
         self.status_label.configure(text="Running...", text_color="orange")
         self.update_progress()
         
-
-    def plot_graph(self):
-        current = np.linspace(0, 9.2, 100)
-        voltage = 9.97 - (current / 9.2) * 9.97
-
-        fig, ax = plt.subplots()
-        fig.patch.set_facecolor('#47289b')  # Changed background color
-        ax.set_facecolor('#47289b')  # Changed background color
-
-        # Gradient fill for voltage
-        ax.plot(current, voltage, label="Voltage", color='#C48BFF', linewidth=2.5)
-        ax.fill_between(current, voltage, color='#A260E8', alpha=0.5, edgecolor='none')
-
-        current_curve = 4.63 * np.exp(-current / 2.0)
-        # Gradient fill for current
-        ax.plot(current, current_curve, label="Current", color='#9254C8', linewidth=2.5)
-        ax.fill_between(current, current_curve, color='#4B237B', alpha=0.5, edgecolor='none')
-
-        ax.set_xlabel("Current", color='#AD94FF', fontsize=12)
-        ax.set_ylabel("Voltage", color='#AD94FF', fontsize=12)
-        ax.xaxis.label.set_color('#AD94FF')
-        ax.yaxis.label.set_color('#AD94FF')
-
-        ax.spines['left'].set_color('#FFFFFF')
-        ax.spines['bottom'].set_color('#FFFFFF')
-        ax.spines['top'].set_color('#47289b')  # Changed color
-        ax.spines['right'].set_color('#47289b')  # Changed color
-
-        ax.tick_params(axis='x', colors='#FFFFFF')
-        ax.tick_params(axis='y', colors='#FFFFFF')
-
-        ax.legend(facecolor='none', edgecolor='none', fontsize=12)
-        ax.grid(True, color='#3A3A3A')
-
-        # Customize labels position and color
-        ax.xaxis.label.set_color('#AD94FF')
-        ax.yaxis.label.set_color('#AD94FF')
-        ax.set_title('Current vs Voltage', color='#AD94FF', fontsize=16)
-
-        # Add custom label
-        plt.text(4.5, 2.5, 'Current', color='#AD94FF', fontsize=12, ha='center')
-        plt.text(8.5, 6, 'Voltage', color='#AD94FF', fontsize=12, ha='center')
-
-        canvas = FigureCanvasTkAgg(fig, master=self.dashboard_frame)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=1, column=3, rowspan=6, columnspan=4, padx=10, pady=10, sticky="nsew")
 
     def show_dashboard(self):
         self.dashboard_frame.pack(fill="both", expand=True)
@@ -342,8 +296,8 @@ class GUI:
         self.image_image_4 = PhotoImage(
             file=self.relative_to_assets("image_4.png"))
         image_4 = canvas.create_image(
-            0.0,
-            72.0,
+            2,
+            62.0,
             image=self.image_image_4
         )
 
@@ -528,7 +482,7 @@ class GUI:
             anchor="nw",
             text="Lamps",
             fill="#FFFFFF",
-            font=("Poppins Medium", 16)
+            font=("Poppins Medium", 18)
         )
 
         canvas.create_text(
@@ -537,7 +491,7 @@ class GUI:
             anchor="nw",
             text="Time",
             fill="#FFFFFF",
-            font=("Poppins Medium", 16)
+            font=("Poppins Medium", 18)
         )
 
         canvas.create_text(
@@ -546,7 +500,7 @@ class GUI:
             anchor="nw",
             text="Date",
             fill="#FFFFFF",
-            font=("Poppins Medium", 16)
+            font=("Poppins Medium", 18)
         )
 
         canvas.create_text(
@@ -555,7 +509,7 @@ class GUI:
             anchor="nw",
             text="Temperature",
             fill="#FFFFFF",
-            font=("David", 16)
+            font=("David", 18)
         )
         canvas.create_text(
             900.0,
@@ -699,6 +653,11 @@ class GUI:
 
         self.status_label = ctk.CTkLabel(master=self.dashboard_frame, text="Waiting", text_color="orange", font=("Arial", 18, "bold"), bg_color="#281854")
         self.status_label.place(x=450, y=425)
+
+        self.time_label = ctk.CTkLabel(master=self.dashboard_frame, text="", text_color="white", font=("David", 18))
+        self.time_label.place(x=1010, y= 577)
+        self.date_label = ctk.CTkLabel(master = self.dashboard_frame, text = "", text_color="White", font=("David", 18))
+        self.date_label.place(x=1010, y=649)
 
     def on_closing(self):
         self.bk_device.reset_to_manual()
