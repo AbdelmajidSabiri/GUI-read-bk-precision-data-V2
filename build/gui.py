@@ -48,28 +48,37 @@ class GUI:
         self.left_frame.pack(side="left", fill="y")
 
         # Load images
-        self.image_dashboard = PhotoImage(file=self.relative_to_assets("image_2.png"))
-        self.image_bk_profiles = PhotoImage(file=self.relative_to_assets("image_3.png"))
+        self.image_dashboard_ON = PhotoImage(file=self.relative_to_assets("image_2.png"))
+        self.image_dashboard_OFF = PhotoImage(file=self.relative_to_assets("DashboardOFF.png"))
+
+        self.image_bk_profiles_OFF = PhotoImage(file=self.relative_to_assets("image_3.png"))
+        self.image_bk_profiles_ON = PhotoImage(file=self.relative_to_assets("BkProfilesON.png"))
+
+        self.image_image_4 = PhotoImage(file=self.relative_to_assets("image_4.png"))
+        self.image_image_21 = PhotoImage(file=self.relative_to_assets("image_21.png"))
+        self.image_image_20 = PhotoImage(file=self.relative_to_assets("image_20.png"))
+        
 
         # Create buttons with images
-        self.dashboard_button = ctk.CTkButton(master=self.left_frame, image=self.image_dashboard, text="DASHBOARD", compound="top", command=self.show_dashboard, fg_color='#0C0028', text_color='#FFFFFF', font=("Arial Rounded MT Bold",14))
-        self.dashboard_button.pack(pady=10, padx=10, anchor='w')
+        self.dashboard_button = ctk.CTkButton(master=self.left_frame, image=self.image_dashboard_ON, text="DASHBOARD", compound="top", command=self.show_dashboard, fg_color='#0C0028', text_color='#FFFFFF', font=("Arial Rounded MT Bold",14))
+        self.dashboard_button.pack(pady=10, padx=0, anchor='w')
 
-        self.bk_profiles_button = ctk.CTkButton(master=self.left_frame, image=self.image_bk_profiles, text="BK PROFILES", compound="top", command=self.show_bk_profiles, fg_color='#0C0028', text_color='#473F70', font=("Arial Rounded MT Bold",14))
-        self.bk_profiles_button.pack(pady=10, padx=10, anchor='w')
+        self.bk_profiles_button = ctk.CTkButton(master=self.left_frame, image=self.image_bk_profiles_OFF, text="BK PROFILES", compound="top", command=self.show_bk_profiles, fg_color='#0C0028', text_color='#473F70', font=("Arial Rounded MT Bold",14))
+        self.bk_profiles_button.pack(pady=10, padx=0, anchor='w')
 
         # Create a frame for the main content
         self.main_frame = ctk.CTkFrame(master=self.window, fg_color='#0C0028')
         self.main_frame.pack(side="right", expand=True, fill="both", padx=0, pady=0)
 
         self.dashboard_frame = ctk.CTkFrame(master=self.main_frame, fg_color='#0C0028')
-        self.bk_profiles_frame = ctk.CTkFrame(master=self.main_frame, fg_color='#47289b')
+        self.bk_profiles_frame = ctk.CTkFrame(master=self.main_frame, fg_color='#0C0028')
 
         # Initial display
         self.dashboard_frame.pack(fill="both", expand=True)
 
         # Setup content of dashboard
         self.setup_dashboard_content()
+        self.setup_bk_profiles_content()
 
         # Start update loop for maximum power and time
         self.update_max_power()
@@ -243,8 +252,7 @@ class GUI:
             self.run_button.configure(state = 'normal')
             self.run_button.configure(image = self.image_image_22)
 
-
-    # Function To Start Test if RUN TEST button is pressed
+    # Function to Start Test if RUN TEST button is pressed
     def run_test(self):
         self.progress = 0
         self.progress_bar.set(self.progress)
@@ -253,29 +261,34 @@ class GUI:
         self.run_button.configure(image = self.pause)
         self.update_progress()
     
+    # Function to turn ON the light
     def ON_Lamps(self):
         self.ON_button.configure(text_color = "#06F30B")
         self.OFF_button.configure(text_color = "grey")
 
+    # Function to turn OFF the light
     def OFF_Lamps(self):
         self.OFF_button.configure(text_color = "red")
         self.ON_button.configure(text_color = "grey")
-
     
     # Function to show content of dashboard frame if DASHBOARD button is pressed
     def show_dashboard(self):
         self.dashboard_frame.pack(fill="both", expand=True)
+        self.dashboard_button.configure(image = self.image_dashboard_ON, text_color = "White")
+        self.bk_profiles_button.configure(image = self.image_bk_profiles_OFF, text_color = "#473F70")
         self.bk_profiles_frame.pack_forget()
 
     # Function to show content of Bk Profiles frame if BK PROFILES button is pressed
     def show_bk_profiles(self):
         self.bk_profiles_frame.pack(fill="both", expand=True)
-        self.dashboard_frame.pack_forget()
+        self.dashboard_button.configure(image = self.image_dashboard_OFF, text_color = "#473F70")
+        self.bk_profiles_button.configure(image = self.image_bk_profiles_ON, text_color = "white")
 
+        self.dashboard_frame.pack_forget()
 
     # Funtion to Setup content of Dashboard Frame
     def setup_dashboard_content(self):
-
+        
         # initialis dashborad canvas
         canvas = Canvas(
             self.dashboard_frame,
@@ -315,10 +328,8 @@ class GUI:
             font=("Arial Rounded MT Bold", 20)
         )
 
-        self.image_image_4 = PhotoImage(
-            file=self.relative_to_assets("image_4.png"))
         image_4 = canvas.create_image(
-            2,
+            4,
             62.0,
             image=self.image_image_4
         )
@@ -550,16 +561,12 @@ class GUI:
             font=("David", 16)
         )
 
-        self.image_image_20 = PhotoImage(
-            file=self.relative_to_assets("image_20.png"))
         image_20 = canvas.create_image(
             767.0,
             126.9999999999996,
             image=self.image_image_20
         )
 
-        self.image_image_21 = PhotoImage(
-            file=self.relative_to_assets("image_21.png"))
         image_21 = canvas.create_image(
             0.0,
             469.0,
@@ -701,7 +708,36 @@ class GUI:
         self.OFF_button = ctk.CTkButton(master = self.dashboard_frame, text="OFF", text_color="grey", fg_color='#0C0028', command= self.OFF_Lamps, width=20, font=("Arial Rounded MT Bold",18), hover_color='#0C0028')
         self.OFF_button.place(x=820,y=579)
 
-        
+    # Function to Setup content of bk_profiles Frame
+    def setup_bk_profiles_content(self):
+
+        canvas = Canvas(
+            self.bk_profiles_frame,
+            bg = "#0C0028",
+            height = 930,
+            width = 1721,
+            bd = 0,
+            highlightthickness = 0,
+            relief = "ridge"
+        )
+        canvas.place(x = 0, y = 0)
+
+
+        image_20 = canvas.create_image(
+            767.0,
+            126.9999999999996,
+            image=self.image_image_20
+        )
+        image_4 = canvas.create_image(
+            4,
+            182.0,
+            image=self.image_image_4
+        )
+        image_21 = canvas.create_image(
+            0.0,
+            469.0,
+            image=self.image_image_21
+        )
 
     # Funtion to close the application correctly
     def on_closing(self):
@@ -712,4 +748,3 @@ class GUI:
 # Instantiate the GUI class to start the application
 if __name__ == "__main__":
     GUI()
-
