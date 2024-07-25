@@ -42,6 +42,8 @@ class GUI:
         self.Isc_var = StringVar()
         self.Voc_var = StringVar()
         self.temp_var = StringVar(value="25")
+        self.selected_chart = StringVar(value="Current vs Voltage")
+
 
 
         self.left_frame = ctk.CTkFrame(master=self.window, width=200, corner_radius=0, fg_color='#0C0028')
@@ -171,7 +173,10 @@ class GUI:
         try:
             measured_current = self.bk_device.get_current()
             voltage = self.bk_device.get_voltage()
-            return measured_current, voltage
+            if measured_current and voltage :
+                return measured_current, voltage
+            else :
+                return 0.0,0.0
         except Exception as e:
             print(f"Error retrieving data: {e}")
             return 0.0, 0.0
@@ -179,43 +184,75 @@ class GUI:
     # Animation function for updating Combined (current & voltage) plot
     def animate_combined(self, i, ax):
         # Simulated data
-        current = 10 * math.sin(i * 0.1) + random.uniform(-1, 1)
-        voltage = 20 * math.cos(i * 0.1) + random.uniform(-1, 1)
+        # current = 10 * math.sin(i * 0.1) + random.uniform(-1, 1)
+        # voltage = 20 * math.cos(i * 0.1) + random.uniform(-1, 1)
+        current, voltage = self.get_data()
+        power = current * voltage
 
         self.data_list_current.append(current)
         self.data_list_voltage.append(voltage)
+        self.data_list_power.append(power)
         self.data_list_current = self.data_list_current[-50:]  # Limit to the last 50 data points
-        self.data_list_voltage = self.data_list_voltage[-50:]  # Limit to the last 50 data points
+        self.data_list_voltage = self.data_list_voltage[-50:]   # Limit to the last 50 data points
+        self.data_list_power = self.data_list_power[-50:]
         
         ax.clear()
-
         ax.set_facecolor('#0C0028')
-        
+
+        if self.selected_chart.get() == "Current vs Voltage" :
+                
         # Plot the current data
-        ax.plot(self.data_list_current,color='#C48BFF', linewidth=2.5)
-        ax.fill_between(range(len(self.data_list_current)), self.data_list_current, color='#A260E8', alpha=0.5, edgecolor='none')
+            ax.plot(self.data_list_voltage,color='#FEB9FF', linewidth=2.5)
+            ax.fill_between(range(len(self.data_list_voltage)), self.data_list_voltage, color='#4B237B', alpha=0.5, edgecolor='none')
 
-        # Plot the voltage data
-        ax.plot(self.data_list_voltage, color='#FEB9FF', linewidth=2.5)
-        ax.fill_between(range(len(self.data_list_voltage)), self.data_list_voltage, color='#4B237B', alpha=0.5, edgecolor='none')
+            # Plot the voltage data
+            ax.plot(self.data_list_current, color='#C48BFF', linewidth=2.5)
+            ax.fill_between(range(len(self.data_list_current)), self.data_list_current, color='#A260E8', alpha=0.5, edgecolor='none')
 
-        ax.set_ylim([0, 20]) 
+            ax.set_ylim([0, 20]) 
 
-        ax.set_xlabel("Current", color='#AD94FF')
-        ax.set_ylabel("Voltage", color='#AD94FF')
-        ax.set_title("Simulated Current and Voltage", color='#AD94FF', fontsize=16)
+            ax.set_xlabel("Voltage", color='#AD94FF', fontsize = 14)
+            ax.set_ylabel("Current", color='#AD94FF', fontsize = 14)
 
-        ax.spines['left'].set_color('#FFFFFF')
-        ax.spines['bottom'].set_color('#FFFFFF')
-        ax.spines['top'].set_color('#47289b')
-        ax.spines['right'].set_color('#47289b')
+            ax.spines['left'].set_color('#FFFFFF')
+            ax.spines['bottom'].set_color('#FFFFFF')
+            ax.spines['top'].set_color('#47289b')
+            ax.spines['right'].set_color('#47289b')
 
-        ax.tick_params(axis='x', colors='#FFFFFF')
-        ax.tick_params(axis='y', colors='#FFFFFF')
+            ax.tick_params(axis='x', colors='#FFFFFF')
+            ax.tick_params(axis='y', colors='#FFFFFF')
 
-        ax.grid(True, color='#3A3A3A')
-        ax.xaxis.label.set_color('#AD94FF')
-        ax.yaxis.label.set_color('#AD94FF')
+            ax.grid(True, color='#3A3A3A')
+            ax.xaxis.label.set_color('#AD94FF')
+            ax.yaxis.label.set_color('#AD94FF')
+
+        elif self.selected_chart.get() == "Power vs Voltage" :
+
+            # Plot the Voltage data
+            ax.plot(self.data_list_voltage,color='#FEB9FF', linewidth=2.5)
+            ax.fill_between(range(len(self.data_list_voltage)), self.data_list_voltage, color='#4B237B', alpha=0.5, edgecolor='none')
+
+            # Plot the Power data
+            ax.plot(self.data_list_power, color='#C48BFF', linewidth=2.5)
+            ax.fill_between(range(len(self.data_list_power)), self.data_list_power, color='#A260E8', alpha=0.5, edgecolor='none')
+
+            ax.set_ylim([0, 20]) 
+
+            ax.set_xlabel("Voltage", color='#AD94FF', fontsize = 14)
+            ax.set_ylabel("Power", color='#AD94FF', fontsize = 14)
+
+            ax.spines['left'].set_color('#FFFFFF')
+            ax.spines['bottom'].set_color('#FFFFFF')
+            ax.spines['top'].set_color('#47289b')
+            ax.spines['right'].set_color('#47289b')
+
+            ax.tick_params(axis='x', colors='#FFFFFF')
+            ax.tick_params(axis='y', colors='#FFFFFF')
+
+            ax.grid(True, color='#3A3A3A')
+            ax.xaxis.label.set_color('#AD94FF')
+            ax.yaxis.label.set_color('#AD94FF')
+
         
     # Method to get Serial Number
     def get_serialNum(self):
@@ -251,6 +288,15 @@ class GUI:
             self.SaveData()
             self.run_button.configure(state = 'normal')
             self.run_button.configure(image = self.image_image_22)
+
+
+    def update_chart_selection(self, selection):
+        self.selected_chart.set(selection)
+        self.ax.clear()
+        self.ax.set_facecolor('#0C0028')
+        self.ax.set_title(self.selected_chart.get(), color='white')
+        self.chart_canvas.draw()
+
 
     # Function to Start Test if RUN TEST button is pressed
     def run_test(self):
@@ -288,7 +334,7 @@ class GUI:
 
     # Funtion to Setup content of Dashboard Frame
     def setup_dashboard_content(self):
-        
+
         # initialis dashborad canvas
         canvas = Canvas(
             self.dashboard_frame,
@@ -707,6 +753,11 @@ class GUI:
         self.ON_button.place(x=770,y=579)
         self.OFF_button = ctk.CTkButton(master = self.dashboard_frame, text="OFF", text_color="grey", fg_color='#0C0028', command= self.OFF_Lamps, width=20, font=("Arial Rounded MT Bold",18), hover_color='#0C0028')
         self.OFF_button.place(x=820,y=579)
+
+        self.combo_options = ["Current vs Voltage", "Power vs Voltage"]
+        self.combobox = ctk.CTkComboBox(master=self.dashboard_frame, variable=self.selected_chart, values=self.combo_options, command=self.update_chart_selection, font=("Arial", 14))
+        self.combobox.place(x= 1000, y=100)
+
 
     # Function to Setup content of bk_profiles Frame
     def setup_bk_profiles_content(self):
