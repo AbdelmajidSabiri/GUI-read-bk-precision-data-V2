@@ -425,6 +425,11 @@ class GUI:
             548.0,
             image=self.image_image_12
         )
+        image_12 = canvas.create_image(
+            145.0,
+            800.0,
+            image=self.image_image_12
+        )
 
         self.image_image_13 = PhotoImage(
             file=self.relative_to_assets("image_13.png"))
@@ -441,6 +446,12 @@ class GUI:
             303.0,
             image=self.image_image_14
         )
+        image_14 = canvas.create_image(
+            145.0,
+            799.0,
+            image=self.image_image_14
+        )
+
 
         self.image_image_15 = PhotoImage(
             file=self.relative_to_assets("image_15.png"))
@@ -532,6 +543,15 @@ class GUI:
             422.0,
             anchor="nw",
             text="Vmp",
+            fill="#FFFFFF",
+            font=("Poppins Medium", 16)
+        )
+
+        canvas.create_text(
+            125.0,
+            685.0,
+            anchor="nw",
+            text="FF %",
             fill="#FFFFFF",
             font=("Poppins Medium", 16)
         )
@@ -702,7 +722,7 @@ class GUI:
                 fg="#06F30B",
                 font=("Arial Rounded MT Bold", 16)
             )
-        self.label_FF_value.place(x=80, y=700)
+        self.label_FF_value.place(x=120, y=780)
 
 
         # Entry Text for serial number of solar module
