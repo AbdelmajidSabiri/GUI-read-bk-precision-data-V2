@@ -130,6 +130,7 @@ class GUI:
 
         # Calculate and Update Isc and Voc
         self.calculate_isc_voc()
+        self.calculate_FF()
 
         # Update every sec
         self.window.after(1000, self.update_max_power)
@@ -163,6 +164,18 @@ class GUI:
         if not Voc_found :
             self.Voc_var.set("0.00000000 V")  
 
+
+    def calculate_FF(self) :
+        isc = self.isc_value
+        voc = self.voc_value
+        maxPower = self.max_power
+
+        if isc and voc and maxPower :
+            FF = (maxPower / isc * voc) * 100
+        else :
+            FF = 0
+
+        self.FF_var.set(f"{FF} %")
 
 
     # Funtion to update Time
@@ -682,14 +695,14 @@ class GUI:
             )
         self.label_Voc_value.place(x=305, y=285)
 
-        self.label_Voc_value = Label(
+        self.label_FF_value = Label(
                 self.dashboard_frame,
                 textvariable=self.FF_var,
                 bg="#281854",
                 fg="#06F30B",
                 font=("Arial Rounded MT Bold", 16)
             )
-        self.label_Voc_value.place(x=80, y=485)
+        self.label_FF_value.place(x=80, y=700)
 
 
         # Entry Text for serial number of solar module
